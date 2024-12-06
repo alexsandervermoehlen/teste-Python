@@ -2,6 +2,6 @@
 
 para vriar a venv execute "python -m venv venv" no diretorio raiz do projeto
 
-para ativar a venv do projeto execute no diretorio principal o comando ".\venv\Scripts\activate"
+para ativar eexecutar a venv do projeto execute no diretorio principal o comando ".\venv\Scripts\activate"
 
-instalar o Flask: pip install flask
+instalar o Flask dentro da venv com ela já ativa: pip install flask

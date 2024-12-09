@@ -63,4 +63,69 @@ def create_carro():
 
 
 
+# Edita carro
+@app.route(f'/carros/<int:id>', methods=['PUT'])
+def update_carro(id):
+    # conn = mydb.cursor()
+
+    try:
+        # Dados enviados pelo cliente
+        dados = request.json
+        marca = dados.get('marca')
+        modelo = dados.get('modelo')
+        ano = dados.get('ano')
+
+        # Validação dos dados recebidos
+        if not marca or not modelo or not ano:
+            return jsonify({"error": "Todos os campos (marca, modelo, ano) são obrigatórios"}), 400
+
+        # Construindo a consulta com parâmetros
+        sql = """
+                UPDATE carros 
+                SET marca = %s, modelo = %s, ano = %s 
+                WHERE id = %s
+            """
+
+        valores = (marca, modelo, ano, id)
+
+        # Executando a consulta
+        conn = mydb.cursor()
+        conn.execute(sql, valores)
+        mydb.commit()
+
+        # Verificando se alguma linha foi atualizada
+        if conn.rowcount == 0:
+            return jsonify({"error": "Carro não encontrado"}), 404
+
+        return jsonify({"message": "Carro atualizado com sucesso!"}), 200
+
+    except Exception as e:
+        print(f"Erro ao atualizar carro: {e}")
+        return jsonify({"error": "Erro interno do servidor"}), 500
+
+
+# Edita carro
+@app.route(f'/carros/<int:id>', methods=['DELETE'])
+def delete_carro(id):
+    try:
+        conn = mydb.cursor()
+
+        # Corrigido o SQL para incluir a cláusula FROM
+        sql = "DELETE FROM carros WHERE id = %s"
+        valores = (id,)
+
+        conn.execute(sql, valores)
+        mydb.commit()
+
+        if conn.rowcount == 0:
+            return jsonify({"error": "Carro não encontrado"}), 404
+
+        return jsonify({"message": "Carro deletado com sucesso!"}), 200
+
+    except Exception as e:
+        print(f"Erro ao deletar carro: {e}")
+        return jsonify({"error": "Erro interno do servidor"}), 500
+
+
+
 app.run()
